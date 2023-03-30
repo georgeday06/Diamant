@@ -1,9 +1,11 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 int turn = 0;
+int equaldiamonds = 0;
 int depth = 0;
 List<Player> playerCount = new List<Player>(); // Creates player list
 setup(playerCount);
-runGame(playerCount, turn, depth);
+runGame(playerCount, turn, depth, equaldiamonds);
 
 static void setup(List<Player> playerCount)
 {
@@ -16,8 +18,46 @@ static void setup(List<Player> playerCount)
         playerCount.Add(new Player(n)); // Creates the new player. Can be accessed with playerCount[i].METHOD
         Console.Clear();
     }
+    Console.WriteLine("Do you need instructions? (Y/N)");
+    string inst = Console.ReadLine();
+    if (inst == "Y" || inst == "y")
+    {
+        instructions();
+    }
 }
 
+static int checkTurn(int turn, List<Player> playerCount, int equaldiamonds)
+{
+    if (turn >= playerCount.Count)
+    {
+        for (int i = 0; i < playerCount.Count; i++)
+        {
+            if (playerCount[i].getReturn())
+            {
+                Console.WriteLine("Player {0} has returned to camp", playerCount[i].getName());
+            }
+            else
+            {
+                Console.WriteLine("Player {0} has looted {1} diamonds", playerCount[i].getName(), equaldiamonds);
+                C
+            }
+        }
+        turn = 0;
+    }
+    return turn;
+}
+static bool checkReturn(int turn, List<Player> playerCount)
+{
+    bool inCamp = playerCount[turn].getReturn();
+    if (inCamp == true)
+    {
+        return true;
+    }
+    else 
+    {
+        return false;
+    }
+}
 static void instructions()
 {
     Console.Clear();
@@ -31,22 +71,42 @@ static void instructions()
     Console.ReadLine();
 }
 
-static void runGame(List<Player> playerCount, int turn, int depth)
+static void runGame(List<Player> playerCount, int turn, int depth, int equaldiamonds)
 {
     bool gameOver = false;
-    Console.WriteLine("Do you need instructions? (Y/N)");
-    string inst = Console.ReadLine();
-    if (inst == "Y" || inst == "y")
+    if (checkReturn(turn, playerCount) == true)
     {
-        instructions();
+        Console.WriteLine("Player " + playerCount[turn].getName() + ", has been skipped as they have returned to camp.");
+        turn++;
+        Console.Clear();
+        turn = checkTurn(turn, playerCount, equaldiamonds);
+        runGame(playerCount, turn, depth, equaldiamonds);
     }
-    while (gameOver == false)
+    else
     {
         Console.WriteLine("Player " + playerCount[turn].getName() + ", it is your turn.");
-        Console.WriteLine()
-        Console.WriteLine("You enter depth: " + depth);
+        Console.WriteLine("Do you want to: ");
+        Console.WriteLine("1) Go Deeper");
+        Console.WriteLine("2) Return to camp");
+        int choice = Convert.ToInt32(Console.ReadLine());
+        if (choice == 1)
+        {
+            Console.WriteLine("You enter depth: " + depth);
+            turn++;
+            depth++;
+            Console.Clear();
+            turn = checkTurn(turn, playerCount, equaldiamonds);
+            runGame(playerCount, turn, depth, equaldiamonds);
+        }
+        else if (choice == 2)
+        {
+            playerCount[turn].setReturn();
+            Console.Clear();
+            turn = checkTurn(turn, playerCount, equaldiamonds);
+            runGame(playerCount, turn, depth, equaldiamonds);
+        }
     }
-}
+ }
 
 class Player
 {
@@ -76,6 +136,15 @@ class Player
     public bool getInCamp()
     {
         return inCamp;
+    }
+    public bool getReturn()
+    {
+        return Return;
+    }
+    public void setReturn()
+    {
+        Return = true;
+        inCamp = true;
     }
 
 }
