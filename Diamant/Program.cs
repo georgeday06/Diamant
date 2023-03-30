@@ -1,11 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
+
 int turn = 0;
 int equaldiamonds = 0;
-int depth = 0;
+int depth = 1;
+int spiders = 2;
+int snakes = 2;
+int spear = 2;
+int rocks = 2;
+
 List<Player> playerCount = new List<Player>(); // Creates player list
 setup(playerCount);
-runGame(playerCount, turn, depth, equaldiamonds);
+runGame(playerCount, turn, depth, equaldiamonds, spiders, snakes, spear, rocks);
 
 static void setup(List<Player> playerCount)
 {
@@ -36,9 +43,13 @@ static int checkTurn(int turn, List<Player> playerCount, int equaldiamonds)
             {
                 Console.WriteLine("Player {0} has returned to camp", playerCount[i].getName());
             }
-            else
+            else if (playerCount[i].getReturn() == false)
             {
                 Console.WriteLine("Player {0} has looted {1} diamonds", playerCount[i].getName(), equaldiamonds);
+            }
+            else if (playerCount[i].getInCamp())
+            {
+
             }
         }
         turn = 0;
@@ -70,7 +81,7 @@ static void instructions()
     Console.ReadLine();
 }
 
-static void runGame(List<Player> playerCount, int turn, int depth, int equaldiamonds)
+static void runGame(List<Player> playerCount, int turn, int depth, int equaldiamonds, int spiders, int snakes, int spear, int rocks)
 {
     bool gameOver = false;
     if (checkReturn(turn, playerCount) == true)
@@ -79,7 +90,7 @@ static void runGame(List<Player> playerCount, int turn, int depth, int equaldiam
         turn++;
         Console.Clear();
         turn = checkTurn(turn, playerCount, equaldiamonds);
-        runGame(playerCount, turn, depth, equaldiamonds);
+        runGame(playerCount, turn, depth, equaldiamonds, spiders, snakes, spear, rocks);
     }
     else
     {
@@ -95,17 +106,89 @@ static void runGame(List<Player> playerCount, int turn, int depth, int equaldiam
             depth++;
             Console.Clear();
             turn = checkTurn(turn, playerCount, equaldiamonds);
-            runGame(playerCount, turn, depth, equaldiamonds);
+            runGame(playerCount, turn, depth, equaldiamonds, spiders, snakes, spear, rocks);
+            
+
         }
         else if (choice == 2)
         {
             playerCount[turn].setReturn();
             Console.Clear();
             turn = checkTurn(turn, playerCount, equaldiamonds);
-            runGame(playerCount, turn, depth, equaldiamonds);
+            runGame(playerCount, turn, depth, equaldiamonds, spiders, snakes, spear, rocks);
         }
     }
  }
+
+static int DownCave(int spiders, int snakes, int spear, int rocks, int turn, List<Player> playerCount)
+{
+    Random r = new Random();
+    int random = r.Next(1, 4);
+
+    if (random == 1)
+    {
+        Console.WriteLine("You ran into a peril.");
+        r.Next(1, 4);
+        if (random == 1)
+        {
+            if (spiders == 2)
+            {
+                spiders -= 1;
+                Console.WriteLine("You ran into a Spider. You have {0} chances left.", spiders);
+                return spiders;
+            }
+            else
+            {
+                Console.WriteLine("You ran into a Spider. You are dead.");
+                playerCount[turn].setDead();
+
+            }
+        }
+        else if (random == 2)
+        {
+            if (snakes == 2)
+            {
+                Console.WriteLine("You ran into a Snake. You have {0} chances left.", snakes);
+                snakes -= 1;
+                return snakes;
+            }
+            else
+            {
+                Console.WriteLine("You ran into a Snake. You are dead.");
+                playerCount[turn].setDead();
+            }
+        }
+        else if (random == 3)
+        {
+            if (spear == 2)
+            {
+                Console.WriteLine("You ran into a Spear. You have {0} chances left.", spear);
+                spear -= 1;
+                return spear;
+            }
+            else
+            {
+                Console.WriteLine("You ran into a Spear. You are dead.");
+                playerCount[turn].setDead();
+            }
+        }
+        else 
+        {
+            if (rocks == 2)
+            {
+                Console.WriteLine("You ran into falling rocks. You have {0} chances left.", rocks);
+                rocks -= 1;
+                return rocks;
+            }
+            else
+            {
+                Console.WriteLine("You ran into falling rocks. You are dead.");
+                playerCount[turn].setDead();
+            }
+        }
+    }
+    return 0;
+}
 
 class Player
 {
@@ -113,6 +196,7 @@ class Player
     private int diamonds;
     private bool inCamp;
     private bool Return;
+    private bool dead;
 
     public Player(string n)
     {
@@ -120,6 +204,7 @@ class Player
         diamonds = 0;
         inCamp = true;
         Return = false;
+        dead = false;
     }
 
     public int getDiamondCount()
@@ -145,5 +230,13 @@ class Player
         Return = true;
         inCamp = true;
     }
-
+    public void setCamp()
+    {
+        Return = false;
+        inCamp = true;
+    }
+    public void setDead()
+    {
+        dead = true;
+    }
 }
