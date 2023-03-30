@@ -39,7 +39,6 @@ static int checkTurn(int turn, List<Player> playerCount, int equaldiamonds)
             else
             {
                 Console.WriteLine("Player {0} has looted {1} diamonds", playerCount[i].getName(), equaldiamonds);
-                C
             }
         }
         turn = 0;
