@@ -14,7 +14,7 @@ List<Player> playerCount = new List<Player>(); // Creates player list
 setup(playerCount);
 runGame(playerCount, turn, depth, equaldiamonds, spiders, snakes, spear, rocks);
 
-static void setup(List<Player> playerCount)
+static void setup(List<Player> playerCount) // Sets up the game
 {
     Console.WriteLine("How many players would you like? (2-4 Players)");
     int players = Convert.ToInt32(Console.ReadLine()); // Saves the amount of players they need
@@ -33,7 +33,7 @@ static void setup(List<Player> playerCount)
     }
 }
 
-static int checkTurn(int turn, List<Player> playerCount, int equaldiamonds)
+static int checkTurn(int turn, List<Player> playerCount, int equaldiamonds) // Check which player turn it is. 
 {
     if (turn >= playerCount.Count)
     {
@@ -68,7 +68,7 @@ static bool checkReturn(int turn, List<Player> playerCount)
         return false;
     }
 }
-static void instructions()
+static void instructions() // Sends the game instructions should the player ask for it. 
 {
     Console.Clear();
     Console.WriteLine("The game is played in turns.");
@@ -81,7 +81,7 @@ static void instructions()
     Console.ReadLine();
 }
 
-static void runGame(List<Player> playerCount, int turn, int depth, int equaldiamonds, int spiders, int snakes, int spear, int rocks)
+static void runGame(List<Player> playerCount, int turn, int depth, int equaldiamonds, int spiders, int snakes, int spear, int rocks) // General Game running subroutine.
 {
     bool gameOver = false;
     if (checkReturn(turn, playerCount) == true)
@@ -120,7 +120,7 @@ static void runGame(List<Player> playerCount, int turn, int depth, int equaldiam
     }
  }
 
-static int DownCave(int spiders, int snakes, int spear, int rocks, int turn, List<Player> playerCount)
+static int DownCave(int spiders, int snakes, int spear, int rocks, int turn, List<Player> playerCount) // Makes the player go down the cave. 
 {
     Random r = new Random();
     int random = r.Next(1, 4);
